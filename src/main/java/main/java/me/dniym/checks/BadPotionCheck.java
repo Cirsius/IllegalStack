@@ -75,12 +75,10 @@ public class BadPotionCheck {
 			 if (p != null && Protections.AllowBypass.isEnabled() && p.hasPermission("illegalstack.enchantbypass")) 
 	                return false;
 	            
-			 PotionMeta potion = null;
-			 
-			 if(IllegalStack.isPaperServer()) 
-				 potion = (PotionMeta) tp.getPotionMeta();
-			  else 
-				  potion = (PotionMeta) tp.getItem().getItemMeta();
+			 ItemMeta potionItemMeta = tp.getItem().getItemMeta();
+			 if (!(potionItemMeta instanceof PotionMeta))
+				 return false;
+			 PotionMeta potion = (PotionMeta) potionItemMeta;
 			 
 	         PotionData pd = potion.getBasePotionData();
 	         

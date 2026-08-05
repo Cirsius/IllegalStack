@@ -58,14 +58,15 @@ public class Log {
 
         if (Protections.LogOffensesInSeparateFile.isEnabled()) {
             try {
-                LOGGER.info(message);
                 BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
                 bw.append(dateStamp() + " - ").append(message).append("\r\n");
                 bw.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
+        }
+
+        if (Protections.LogOffensesToConsole.isEnabled()) {
             LOGGER.info(message);
         }
 
@@ -158,14 +159,15 @@ public class Log {
 
         if (Protections.LogOffensesInSeparateFile.isEnabled()) {
             try {
-                LOGGER.info("(Notification Only) {} {}", prot.name(), message);
                 BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
                 bw.append(dateStamp()).append(message).append("\r\n");
                 bw.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
+        }
+
+        if (Protections.LogOffensesToConsole.isEnabled()) {
             LOGGER.info("(Notification Only) {}", message);
         }
 

@@ -71,6 +71,16 @@ public enum Protections {
             "",
             0
     ),
+    LogOffensesToConsole(
+            3,
+            true,
+            "Logging Offenses To Console",
+            "ALL",
+            "Misc.LogOffensesToConsole",
+            "Reports offenses detected by IllegalStack in the server console. Disable this to keep protections active without printing each detection to the console.",
+            "",
+            0
+    ),
     PlayerOffenseNotifications(
             3,
             false,
