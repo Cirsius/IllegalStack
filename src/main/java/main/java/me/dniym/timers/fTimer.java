@@ -616,9 +616,6 @@ public class fTimer implements Runnable {
                         if (is == null || Protections.DisableInWorlds.getTxtSet().contains(p.getWorld().getName())) {
                             continue;
                         }
-                        if (Protections.FixNegativeDurability.isEnabled()) {
-                            NBTStuff.checkForNegativeDurability(is, p);
-                        }
                         if (is.hasItemMeta()) {
                             ItemMeta im = is.getItemMeta();
 
@@ -645,8 +642,9 @@ public class fTimer implements Runnable {
                                 BadAttributeCheck.checkForBadCustomData(is, p);
                             }
                             
-                            if (Protections.PreventInvalidPotions.isEnabled())
-                            	BadPotionCheck.checkPotion(is,p);
+                            if (Protections.PreventInvalidPotions.isEnabled()) {
+                                BadPotionCheck.checkPotion(is, p, im);
+                            }
                             
                         }
                         if (Protections.FixIllegalEnchantmentLevels.isEnabled() && !mcMMOListener.ismcMMOActive(p)) {

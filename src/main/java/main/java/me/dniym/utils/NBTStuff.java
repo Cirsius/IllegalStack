@@ -173,20 +173,25 @@ public class NBTStuff {
     }
 
     public static void checkForNegativeDurability(ItemStack is, Player p) {
-        if (is == null) {
+        if (is == null || !IllegalStack.isHasAttribAPI()) {
             return;
         }
 
-        if (IllegalStack.isHasAttribAPI()) {
-            if (is.hasItemMeta() && is.getItemMeta() instanceof Damageable) {
-                Damageable dmg = (Damageable) is.getItemMeta();
-                if (dmg.getDamage() > is.getType().getMaxDurability()) {
-                    fListener.getLog().append(Msg.IllegalStackDurability.getValue(p, is), Protections.FixNegativeDurability);
-                    dmg.setDamage(is.getType().getMaxDurability());
-                    is.setItemMeta((ItemMeta) dmg);
+        int maxDurability = is.getType().getMaxDurability();
+        if (maxDurability <= 0) {
+            return;
+        }
 
-                }
-            }
+        ItemMeta itemMeta = is.getItemMeta();
+        if (!(itemMeta instanceof Damageable)) {
+            return;
+        }
+
+        Damageable damageable = (Damageable) itemMeta;
+        if (damageable.getDamage() > maxDurability) {
+            fListener.getLog().append(Msg.IllegalStackDurability.getValue(p, is), Protections.FixNegativeDurability);
+            damageable.setDamage(maxDurability);
+            is.setItemMeta(itemMeta);
         }
     }
 

@@ -20,10 +20,15 @@ import main.java.me.dniym.utils.NBTStuff;
 public class BadPotionCheck {
 
 	public static void checkPotion(ItemStack is, Player p) {
-		if(!is.hasItemMeta())
+		if (!is.hasItemMeta()) {
 			return;
-		ItemMeta im = is.getItemMeta();
-        if (Protections.PreventInvalidPotions.isEnabled() && im instanceof PotionMeta) {
+		}
+
+		checkPotion(is, p, is.getItemMeta());
+	}
+
+	public static void checkPotion(ItemStack is, Player p, ItemMeta itemMeta) {
+        if (Protections.PreventInvalidPotions.isEnabled() && itemMeta instanceof PotionMeta) {
             if (Protections.AllowBypass.isEnabled() && p.hasPermission("illegalstack.enchantbypass")) 
                 return;
             
@@ -32,7 +37,7 @@ public class BadPotionCheck {
                  return;
               
             
-            PotionMeta potion = (PotionMeta) is.getItemMeta();
+            PotionMeta potion = (PotionMeta) itemMeta;
             PotionData pd = potion.getBasePotionData();
             if (pd.getType() == PotionType.UNCRAFTABLE || (potion.hasCustomEffects() && !potion
                     .getCustomEffects()
