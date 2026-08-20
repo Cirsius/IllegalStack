@@ -2381,44 +2381,47 @@ public enum Protections {
     }
 
     public boolean loreNameMatch(ItemMeta itemMeta) {
-        HashMap<String, Boolean> target = Protections.RemoveItemsMatchingName.getLoreNameList();
-        boolean found = false;
-        for (String s : target.keySet()) {
+        boolean strict = Protections.NameLoreStrictMatchMode.isEnabled();
 
-            if (target.get(s) && itemMeta.hasLore()) //lore matching
-            {
-                for (String line : itemMeta.getLore()) {
-                    if (Protections.NameLoreStrictMatchMode.isEnabled()) {
-                        if (line.equals(s)) {
-                            found = true;
-                        }
-                    } else if (ChatColor.stripColor(line).contains(s)) {
-                        found = true;
-                    }
+        if (itemMeta.hasLore()) {
+            for (String s : Protections.ItemLoresToRemove.getTxtSet()) {
+                if (Protections.ItemNamesToRemove.getTxtSet().contains(s)) {
+                    continue;
                 }
-
-
-            } else {
-                if (Protections.NameLoreStrictMatchMode.isEnabled()) {
-                    if (itemMeta.hasDisplayName() && itemMeta.getDisplayName().equals(s)) {
-                        found = true;
+                for (String line : itemMeta.getLore()) {
+                    if (strict ? line.equals(s) : ChatColor.stripColor(line).contains(s)) {
+                        return true;
                     }
-                } else if (itemMeta.hasDisplayName() && ChatColor.stripColor(itemMeta.getDisplayName()).contains(s)) {
-                    found = true;
                 }
             }
         }
-        return found;
+
+        if (!itemMeta.hasDisplayName()) {
+            return false;
+        }
+        String displayName = itemMeta.getDisplayName();
+        String plainDisplayName = strict ? displayName : ChatColor.stripColor(displayName);
+        for (String s : Protections.ItemNamesToRemove.getTxtSet()) {
+            if (strict ? displayName.equals(s) : plainDisplayName.contains(s)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isWhitelisted(Material type) {
         for (String s : this.getTxtSet()) {
-            Material m = Material.matchMaterial(s);
+            String entry = s.trim();
+            if (type.name().equalsIgnoreCase(entry)) {
+                return true;
+            }
+
+            Material m = Material.matchMaterial(entry);
             if (m != null && type == m) {
                 return true;
             }
 
-            if (m == null && type.name().contains(s.trim())) {
+            if (m == null && type.name().contains(entry)) {
                 return true;
             }
         }
@@ -2459,11 +2462,16 @@ public enum Protections {
         }
 
         for (String s : this.getTxtSet()) {
-            Material m = Material.matchMaterial(s);
+            String entry = s.trim();
+            if (is.getType().name().equalsIgnoreCase(entry)) {
+                return true;
+            }
+
+            Material m = Material.matchMaterial(entry);
             if (m != null && is.getType() == m) {
                 return true;
             }
-            if (is.serialize().toString().equalsIgnoreCase(s)) {
+            if (entry.startsWith("{") && is.serialize().toString().equalsIgnoreCase(entry)) {
                 return true;
             }
         }

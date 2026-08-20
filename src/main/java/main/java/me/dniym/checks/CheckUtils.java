@@ -109,16 +109,7 @@ public class CheckUtils {
     public static boolean CheckEntireInventory(Inventory inv) {
 
         for (ItemStack is : inv.getContents()) {
-            if (is == null) {
-                continue;
-            }
-            if (RemoveItemTypesCheck.shouldRemove(is, inv)) {
-                return true;
-            } else if (IllegalEnchantCheck.isIllegallyEnchanted(is, inv)) {
-                return true;
-            } else if (BadAttributeCheck.hasBadAttributes(is, inv)) {
-                return true;
-            } else if (OverstackedItemCheck.CheckContainer(is, inv)) {
+            if (checkInventoryItem(is, inv)) {
                 return true;
             }
 
@@ -133,6 +124,17 @@ public class CheckUtils {
         }
 
         return false;
+    }
+
+    public static boolean checkInventoryItem(ItemStack itemStack, Inventory inventory) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
+            return false;
+        }
+
+        return RemoveItemTypesCheck.shouldRemove(itemStack, inventory)
+                || IllegalEnchantCheck.isIllegallyEnchanted(itemStack, inventory)
+                || BadAttributeCheck.hasBadAttributes(itemStack, inventory)
+                || OverstackedItemCheck.CheckContainer(itemStack, inventory);
     }
 
 }

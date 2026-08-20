@@ -869,7 +869,7 @@ public class fListener implements Listener {
             return;
         }
 
-        if (CheckUtils.CheckEntireInventory(e.getSource())) {
+        if (CheckUtils.checkInventoryItem(e.getItem(), e.getSource())) {
             e.setCancelled(true);
             Scheduler.runTaskLater(this.plugin, () -> {
                 if (e.getSource().getHolder() instanceof DoubleChest) {

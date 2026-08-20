@@ -338,15 +338,13 @@ public class fTimer implements Runnable {
                                 .isEnabled())) {
                             if (is != null && is.hasItemMeta()) {
                                 ItemMeta im = is.getItemMeta();
-                                for (String ignored : Protections.ItemNamesToRemove.getTxtSet()) {
-                                    if (Protections.RemoveItemsMatchingName.loreNameMatch(im)) {
-                                        if (!Protections.RemoveItemsMatchingName.notifyOnly()) {
-                                            fListener.getLog().append2(Msg.NamedItemRemovalPlayer.getValue(p, is));
-                                            is.setAmount(0);
-                                            is.setType(Material.AIR);
-                                        }
-                                        return true;
+                                if (Protections.RemoveItemsMatchingName.loreNameMatch(im)) {
+                                    if (!Protections.RemoveItemsMatchingName.notifyOnly()) {
+                                        fListener.getLog().append2(Msg.NamedItemRemovalPlayer.getValue(p, is));
+                                        is.setAmount(0);
+                                        is.setType(Material.AIR);
                                     }
+                                    return true;
                                 }
                             }
                         }
